@@ -13,3 +13,18 @@ message EyeCoordinates {
 message EyelidState {
   float closure_percentage = 1; // 0: fully open, 1: fully closed
 }
+
+// RGB color definition (0-255)
+message Color {
+  int32 r = 1; // Red component (0-255)
+  int32 g = 2; // Green component (0-255)
+  int32 b = 3; // Blue component (0-255)
+}
+
+// LED color and priority configuration
+message LedSettings {
+  Color left_led = 1;          // Left LED color (RGB)
+  Color right_led = 2;         // Right LED color (RGB)
+  int32 priority_level = 3;    // Control priority (0-100)
+  optional bool is_active = 4; // Active control when true, release control when false
+}

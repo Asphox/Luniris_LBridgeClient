@@ -183,6 +183,18 @@ bool luniris_get_accelerometer_values(luniris_client_t p_client, InertialMeasure
 bool luniris_get_temperature_value(luniris_client_t p_client, TemperatureValue* p_out_value);
 
 /**
+ * @brief Sends LED settings to the server.
+ *
+ * Controls the LED colors and priority. Set is_active to true to take control,
+ * or false to release control.
+ *
+ * @param p_client  The Luniris client instance.
+ * @param p_settings Pointer to the LED settings to send.
+ * @return true on success, false on failure.
+ */
+bool luniris_send_led_settings(luniris_client_t p_client, const LedSettings* p_settings);
+
+/**
  * @brief Gets all registered actions from the server.
  *
  * @param p_client     The Luniris client instance.

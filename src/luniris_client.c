@@ -490,6 +490,44 @@ bool luniris_get_temperature_value(luniris_client_t p_client, TemperatureValue* 
 	return true;
 }
 
+bool luniris_send_led_settings(luniris_client_t p_client, const LedSettings* p_settings)
+{
+	if (p_client == NULL || p_client->lbridge_client == NULL || p_settings == NULL)
+	{
+		if (p_client != NULL) p_client->last_error = LUNIRIS_ERROR_BAD_ARGUMENT;
+		return false;
+	}
+
+	uint8_t buffer[LedSettings_size];
+	pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));
+
+	if (!pb_encode(&stream, LedSettings_fields, p_settings))
+	{
+		p_client->last_error = LUNIRIS_ERROR_ENCODE_FAILED;
+		return false;
+	}
+
+	uint32_t size = (uint32_t)stream.bytes_written;
+
+	bool result = lbridge_client_call_rpc(
+		p_client->lbridge_client,
+		LUNIRIS_RPC_SEND_LED_SETTINGS,
+		buffer,
+		&size,
+		0
+	);
+
+	if (!result)
+	{
+		p_client->last_error = translate_lbridge_error(lbridge_get_last_error(p_client->lbridge_client));
+	}
+	else
+	{
+		p_client->last_error = LUNIRIS_ERROR_NONE;
+	}
+	return result;
+}
+
 bool luniris_get_registered_actions(luniris_client_t p_client, Actions* p_out_actions)
 {
 	if (p_client == NULL || p_client->lbridge_client == NULL || p_out_actions == NULL)

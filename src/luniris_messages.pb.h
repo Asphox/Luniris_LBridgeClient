@@ -45,6 +45,26 @@ typedef struct _TemperatureValue
 	float temperature; /* Temperature in degrees Celsius */
 } TemperatureValue;
 
+/* RGB color definition (0-255) */
+typedef struct _Color
+{
+	int32_t r; /* Red component (0-255) */
+	int32_t g; /* Green component (0-255) */
+	int32_t b; /* Blue component (0-255) */
+} Color;
+
+/* LED color and priority configuration */
+typedef struct _LedSettings
+{
+	bool has_left_led;
+	Color left_led;        /* Left LED color (RGB) */
+	bool has_right_led;
+	Color right_led;       /* Right LED color (RGB) */
+	int32_t priority_level; /* Control priority (0-100) */
+	bool has_is_active;
+	bool is_active;        /* Active control when true, release control when false */
+} LedSettings;
+
 /* Actions API - size limits */
 #define LUNIRIS_ACTION_KEY_MAX_SIZE          48
 #define LUNIRIS_ACTION_NAME_MAX_SIZE         48
@@ -92,6 +112,10 @@ typedef struct _Actions
 #define TemperatureValue_init_default            {0}
 #define InertialMeasurementValues_init_zero      {0, 0, 0}
 #define TemperatureValue_init_zero               {0}
+#define Color_init_default                       {0, 0, 0}
+#define Color_init_zero                          {0, 0, 0}
+#define LedSettings_init_default                 {false, Color_init_default, false, Color_init_default, 0, false, false}
+#define LedSettings_init_zero                    {false, Color_init_zero, false, Color_init_zero, 0, false, false}
 #define ActionMessage_init_default               {"", ""}
 #define ActionMessage_init_zero                  {"", ""}
 #define Action_init_default                      {"", "", false, 0}
@@ -108,6 +132,13 @@ typedef struct _Actions
 #define InertialMeasurementValues_y_tag          2
 #define InertialMeasurementValues_z_tag          3
 #define TemperatureValue_temperature_tag         1
+#define Color_r_tag                              1
+#define Color_g_tag                              2
+#define Color_b_tag                              3
+#define LedSettings_left_led_tag                 1
+#define LedSettings_right_led_tag                2
+#define LedSettings_priority_level_tag           3
+#define LedSettings_is_active_tag                4
 #define ActionMessage_key_tag                    1
 #define ActionMessage_argument_tag               2
 #define Action_key_tag                           1
@@ -145,6 +176,23 @@ typedef struct _Actions
 #define TemperatureValue_CALLBACK             NULL
 #define TemperatureValue_DEFAULT              NULL
 
+#define Color_FIELDLIST(X, a) \
+	X(a, STATIC, SINGULAR, INT32, r, 1) \
+	X(a, STATIC, SINGULAR, INT32, g, 2) \
+	X(a, STATIC, SINGULAR, INT32, b, 3)
+#define Color_CALLBACK                           NULL
+#define Color_DEFAULT                            NULL
+
+#define LedSettings_FIELDLIST(X, a) \
+	X(a, STATIC, OPTIONAL, MESSAGE, left_led, 1) \
+	X(a, STATIC, OPTIONAL, MESSAGE, right_led, 2) \
+	X(a, STATIC, SINGULAR, INT32, priority_level, 3) \
+	X(a, STATIC, OPTIONAL, BOOL, is_active, 4)
+#define LedSettings_left_led_MSGTYPE             Color
+#define LedSettings_right_led_MSGTYPE            Color
+#define LedSettings_CALLBACK                     NULL
+#define LedSettings_DEFAULT                      NULL
+
 #define ActionMessage_FIELDLIST(X, a) \
 	X(a, STATIC, SINGULAR, STRING, key, 1) \
 	X(a, STATIC, SINGULAR, STRING, argument, 2)
@@ -170,6 +218,8 @@ extern const pb_msgdesc_t EyelidState_msg;
 extern const pb_msgdesc_t BrightnessMessage_msg;
 extern const pb_msgdesc_t InertialMeasurementValues_msg;
 extern const pb_msgdesc_t TemperatureValue_msg;
+extern const pb_msgdesc_t Color_msg;
+extern const pb_msgdesc_t LedSettings_msg;
 extern const pb_msgdesc_t ActionMessage_msg;
 extern const pb_msgdesc_t Action_msg;
 extern const pb_msgdesc_t Actions_msg;
@@ -180,6 +230,8 @@ extern const pb_msgdesc_t Actions_msg;
 #define BrightnessMessage_fields &BrightnessMessage_msg
 #define InertialMeasurementValues_fields &InertialMeasurementValues_msg
 #define TemperatureValue_fields &TemperatureValue_msg
+#define Color_fields &Color_msg
+#define LedSettings_fields &LedSettings_msg
 #define ActionMessage_fields &ActionMessage_msg
 #define Action_fields &Action_msg
 #define Actions_fields &Actions_msg
@@ -190,6 +242,8 @@ extern const pb_msgdesc_t Actions_msg;
 #define BrightnessMessage_size                   11
 #define InertialMeasurementValues_size           15
 #define TemperatureValue_size                    5
+#define Color_size                               18
+#define LedSettings_size                         (2 + Color_size + 2 + Color_size + 6 + 2)
 #define ActionMessage_size                       (2 + LUNIRIS_ACTION_KEY_MAX_SIZE + 2 + LUNIRIS_ACTION_ARG_MAX_SIZE)
 #define Action_size                              (2 + LUNIRIS_ACTION_KEY_MAX_SIZE + 2 + LUNIRIS_ACTION_NAME_MAX_SIZE + 2 + 6)
 #define Actions_size                             (4 + LUNIRIS_ACTIONS_MAX_COUNT * (Action_size + 2))

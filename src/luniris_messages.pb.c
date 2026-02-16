@@ -17,6 +17,10 @@ PB_BIND(InertialMeasurementValues, InertialMeasurementValues, AUTO)
 
 PB_BIND(TemperatureValue, TemperatureValue, AUTO)
 
+PB_BIND(Color, Color, AUTO)
+
+PB_BIND(LedSettings, LedSettings, AUTO)
+
 PB_BIND(ActionMessage, ActionMessage, AUTO)
 
 PB_BIND(Action, Action, AUTO)
