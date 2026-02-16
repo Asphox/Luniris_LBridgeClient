@@ -490,7 +490,7 @@ bool luniris_get_temperature_value(luniris_client_t p_client, TemperatureValue* 
 	return true;
 }
 
-bool luniris_send_led_settings(luniris_client_t p_client, const LedSettings* p_settings)
+bool luniris_send_led_settings(luniris_client_t p_client, const LedSettings* p_settings) 
 {
 	if (p_client == NULL || p_client->lbridge_client == NULL || p_settings == NULL)
 	{
