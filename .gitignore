@@ -5,3 +5,4 @@ cmake-build-*/
 *.user
 CMakeSettings.json
 out/
+CLAUDE.md
